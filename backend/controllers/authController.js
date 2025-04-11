@@ -1,7 +1,7 @@
 const Admin = require("../models/Admin");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const SECRET = process.env.JWT_SECRET || "secretito_super_secreto_123"; // ← mejora esto en .env
+
 
 exports.login = async (req, res) => {
     const { username, password } = req.body;
@@ -13,10 +13,17 @@ exports.login = async (req, res) => {
         const isValid = await bcrypt.compare(password, admin.password);
         if (!isValid) return res.status(401).json({ message: "Credenciales inválidas" });
 
-        const token = jwt.sign({ id: admin._id, username: admin.username }, SECRET, { expiresIn: "12h" });
 
+        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
+            expiresIn: "1h", // 1 hora
+        });
         res.json({ token });
     } catch (err) {
         res.status(500).json({ message: "Error en el login", error: err });
     }
 };
+
+// exports.logout = (req, res) => {
+//     res.status(200).json({ message: "Sesión cerrada. Elimina tu token del cliente." });
+// };
+
