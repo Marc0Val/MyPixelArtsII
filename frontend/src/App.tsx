@@ -1,38 +1,60 @@
-import React, { useEffect } from 'react';
-import { Canvas } from './components/Canvas';
-import { ColorPalette } from './components/ColorPalette';
-import { ZoomControls } from './components/ZoomControls';
-import { HelpPanel } from './components/HelpPanel';
-import { AdminPanel } from './components/AdminPanel';
-import { LoginPanel } from './components/LoginPanel';
-import { SocialLinks } from './components/SocialLinks';
-import { ContactButton } from './components/ContactButton';
-import { ScreenshotButton } from './components/ScreenshotButton';
-import { ThemeToggle } from './components/ThemeToggle';
-import { useStore } from './stores/useStore';
-import { Palette } from 'lucide-react';
+// src/App.tsx
+import { useEffect } from "react";
+import { Canvas } from "./components/Canvas";
+import { ColorPalette } from "./components/ColorPalette";
+import { ZoomControls } from "./components/ZoomControls";
+import { HelpPanel } from "./components/HelpPanel";
+import { AdminPanel } from "./components/AdminPanel";
+import { LoginPanel } from "./components/LoginPanel";
+import { SocialLinks } from "./components/SocialLinks";
+import { ContactButton } from "./components/ContactButton";
+import { ScreenshotButton } from "./components/ScreenshotButton";
+import { ThemeToggle } from "./components/ThemeToggle";
+import { useStore } from "./stores/useStore";
+import { Palette } from "lucide-react";
+import { getCanvasConfig, getColors } from "./services/canvasServices";
 
 function App() {
-  const { user, setZoom, isDarkMode } = useStore();
+  const { user, setZoom, setCanvasConfig, setColors, isDarkMode } = useStore();
 
   useEffect(() => {
     setZoom(16);
+
+    const loadInitialData = async () => {
+      try {
+        const [config, colors] = await Promise.all([
+          getCanvasConfig(),
+          getColors(),
+        ]);
+        setCanvasConfig(config);
+        setColors(colors);
+      } catch (error) {
+        console.error("Error al cargar datos iniciales del backend:", error);
+      }
+    };
+
+    loadInitialData();
   }, []);
 
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
-        isDarkMode ? 'bg-background-dark text-text-dark' : 'bg-background-light text-text-light'
+        isDarkMode
+          ? "bg-background-dark text-text-dark"
+          : "bg-background-light text-text-light"
       }`}
     >
       <header
         className={`fixed top-0 left-0 right-0 shadow-md z-20 px-4 py-3 transition-colors duration-300 ${
-          isDarkMode ? 'bg-gray-800' : 'bg-white'
+          isDarkMode ? "bg-gray-800" : "bg-white"
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Palette className="text-primary-light dark:text-primary-dark" size={24} />
+            <Palette
+              className="text-primary-light dark:text-primary-dark"
+              size={24}
+            />
             <h1 className="text-xl font-bold">MyPixelArtsII</h1>
           </div>
           <div className="flex items-center gap-4">
