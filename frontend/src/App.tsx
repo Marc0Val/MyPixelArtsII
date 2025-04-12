@@ -20,11 +20,19 @@ function App() {
   }, []);
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'}`}>
-      <header className={`fixed top-0 left-0 right-0 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} shadow-md z-20 px-4 py-3`}>
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        isDarkMode ? 'bg-background-dark text-text-dark' : 'bg-background-light text-text-light'
+      }`}
+    >
+      <header
+        className={`fixed top-0 left-0 right-0 shadow-md z-20 px-4 py-3 transition-colors duration-300 ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        }`}
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Palette className="text-blue-500" size={24} />
+            <Palette className="text-primary-light dark:text-primary-dark" size={24} />
             <h1 className="text-xl font-bold">MyPixelArtsII</h1>
           </div>
           <div className="flex items-center gap-4">
