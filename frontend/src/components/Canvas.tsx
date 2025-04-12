@@ -1,7 +1,5 @@
-// src/components/Canvas.tsx
 import React, { useRef, useEffect, useState } from "react";
 import { useStore } from "../stores/useStore";
-// import { fetchPixels, paintPixel } from "../services/pixelService"; // NUEVO
 import { getPixels, paintPixel } from "../services/pixelService";
 
 export const Canvas: React.FC = () => {
@@ -13,6 +11,18 @@ export const Canvas: React.FC = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    color: string;
+    visible: boolean;
+  }>({
+    x: 0,
+    y: 0,
+    color: "",
+    visible: false,
+  });
 
   const drawGrid = (ctx: CanvasRenderingContext2D) => {
     ctx.strokeStyle = isDarkMode ? "#4a4a4a" : "#7d7c7c";
@@ -52,12 +62,11 @@ export const Canvas: React.FC = () => {
     drawPixels(ctx);
   }, [canvasConfig, pixels, zoom, isDarkMode]);
 
-  // 🧠 Obtener píxeles pintados desde el backend
   useEffect(() => {
     const loadPixels = async () => {
       try {
-        const fetched = await getPixels(); // Llamada al servicio para obtener los píxeles
-        fetched.forEach((p) => setPixel(p)); // Guardar en zustand
+        const fetched = await getPixels();
+        fetched.forEach((p) => setPixel(p));
       } catch (error) {
         console.error("Error al cargar píxeles:", error);
       }
@@ -77,12 +86,14 @@ export const Canvas: React.FC = () => {
     const y = Math.floor((e.clientY - rect.top) / zoom);
 
     if (x >= 0 && x < canvasConfig.width && y >= 0 && y < canvasConfig.height) {
-      const newPixel = { x, y, color: selectedColor };
-
       try {
-        // const saved = await paintPixel(newPixel); // Guardar en BD
-        const saved = await paintPixel(x, y, selectedColor); // Guardar en BD
-        setPixel(saved); // Actualizar en estado global
+        const saved = await paintPixel(x, y, selectedColor);
+        setPixel(saved);
+
+        setTooltip({ x, y, color: selectedColor, visible: true });
+        setTimeout(() => {
+          setTooltip((prev) => ({ ...prev, visible: false }));
+        }, 1500);
       } catch (err) {
         console.error("Error al pintar pixel:", err);
       }
@@ -142,6 +153,30 @@ export const Canvas: React.FC = () => {
           transform: `translate(${offset.x}px, ${offset.y}px)`,
         }}
       />
+
+      {tooltip.visible && (
+        <div
+          className="absolute px-2 py-1 text-sm rounded shadow-lg pointer-events-none transition-opacity duration-300"
+          style={{
+            top: tooltip.y * zoom + offset.y - 40,
+            left: tooltip.x * zoom + offset.x + 10,
+            backgroundColor: isDarkMode ? "#2d2d2d" : "#ffffff",
+            color: isDarkMode ? "#ffffff" : "#000000",
+            border: `1px solid ${tooltip.color}`,
+            zIndex: 50,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <div
+              className="w-4 h-4 rounded"
+              style={{ backgroundColor: tooltip.color }}
+            />
+            <span>
+              ({tooltip.x}, {tooltip.y})
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
