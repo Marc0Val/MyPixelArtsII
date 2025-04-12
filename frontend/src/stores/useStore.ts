@@ -23,23 +23,10 @@ interface Store {
   paint: (x: number, y: number, color: string) => void; // Función para pintar un píxel
 }
 
-const initialColors: Color[] = [
-  { id: "1", name: "Red", hex: "#FF0000" },
-  { id: "2", name: "Blue", hex: "#0000FF" },
-  { id: "3", name: "Green", hex: "#00FF00" },
-  { id: "4", name: "Yellow", hex: "#FFFF00" },
-  { id: "5", name: "Black", hex: "#000000" },
-  { id: "6", name: "White", hex: "#FFFFFF" },
-  { id: "7", name: "Purple", hex: "#800080" },
-  { id: "8", name: "Orange", hex: "#FFA500" },
-  { id: "9", name: "Brown", hex: "#A52A2A" },
-  { id: "10", name: "Pink", hex: "#FFC0CB" },
-];
-
 export const useStore = create<Store>((set) => ({
   setColors: (colors) => set({ colors }), // Función para establecer los colores
   canvasConfig: { width: 1000, height: 1000 },
-  colors: initialColors,
+  colors: [],
   pixels: [],
   selectedColor: null,
   zoom: 1,
@@ -49,7 +36,7 @@ export const useStore = create<Store>((set) => ({
   addColor: (color) => set((state) => ({ colors: [...state.colors, color] })),
   removeColor: (id) =>
     set((state) => ({
-      colors: state.colors.filter((c) => c.id !== id),
+      colors: state.colors.filter((c) => c._id !== id),
     })),
   setPixel: (pixel) =>
     set((state) => ({

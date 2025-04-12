@@ -4,7 +4,7 @@ export interface CanvasConfig {
 }
 
 export interface Color {
-  id: string;
+  _id: string;
   name: string;
   hex: string;
 }
