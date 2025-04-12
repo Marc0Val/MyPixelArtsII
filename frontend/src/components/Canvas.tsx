@@ -1,16 +1,21 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useStore } from '../stores/useStore';
+// src/components/Canvas.tsx
+import React, { useRef, useEffect, useState } from "react";
+import { useStore } from "../stores/useStore";
+// import { fetchPixels, paintPixel } from "../services/pixelService"; // NUEVO
+import { getPixels, paintPixel } from "../services/pixelService";
 
 export const Canvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { canvasConfig, pixels, selectedColor, zoom, isDarkMode } = useStore();
+  const { canvasConfig, pixels, setPixel, selectedColor, zoom, isDarkMode } =
+    useStore();
+
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   const drawGrid = (ctx: CanvasRenderingContext2D) => {
-    ctx.strokeStyle = isDarkMode ? '#4a4a4a' : '#7d7c7c';
+    ctx.strokeStyle = isDarkMode ? "#4a4a4a" : "#7d7c7c";
     ctx.lineWidth = 0.9;
 
     for (let x = 0; x <= canvasConfig.width; x++) {
@@ -29,7 +34,7 @@ export const Canvas: React.FC = () => {
   };
 
   const drawPixels = (ctx: CanvasRenderingContext2D) => {
-    pixels.forEach(pixel => {
+    pixels.forEach((pixel) => {
       ctx.fillStyle = pixel.color;
       ctx.fillRect(pixel.x * zoom, pixel.y * zoom, zoom, zoom);
     });
@@ -39,7 +44,7 @@ export const Canvas: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -47,7 +52,21 @@ export const Canvas: React.FC = () => {
     drawPixels(ctx);
   }, [canvasConfig, pixels, zoom, isDarkMode]);
 
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  // 🧠 Obtener píxeles pintados desde el backend
+  useEffect(() => {
+    const loadPixels = async () => {
+      try {
+        const fetched = await getPixels(); // Llamada al servicio para obtener los píxeles
+        fetched.forEach((p) => setPixel(p)); // Guardar en zustand
+      } catch (error) {
+        console.error("Error al cargar píxeles:", error);
+      }
+    };
+
+    loadPixels();
+  }, []);
+
+  const handleCanvasClick = async (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!selectedColor) return;
 
     const canvas = canvasRef.current;
@@ -58,7 +77,15 @@ export const Canvas: React.FC = () => {
     const y = Math.floor((e.clientY - rect.top) / zoom);
 
     if (x >= 0 && x < canvasConfig.width && y >= 0 && y < canvasConfig.height) {
-      useStore.getState().setPixel({ x, y, color: selectedColor });
+      const newPixel = { x, y, color: selectedColor };
+
+      try {
+        // const saved = await paintPixel(newPixel); // Guardar en BD
+        const saved = await paintPixel(x, y, selectedColor); // Guardar en BD
+        setPixel(saved); // Actualizar en estado global
+      } catch (err) {
+        console.error("Error al pintar pixel:", err);
+      }
     }
   };
 
@@ -77,39 +104,35 @@ export const Canvas: React.FC = () => {
 
     const newOffset = {
       x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y
+      y: e.clientY - dragStart.y,
     };
 
-    // Calculate boundaries
     const containerRect = container.getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
 
     const minX = containerRect.width - canvasRect.width;
     const minY = containerRect.height - canvasRect.height;
-    const maxX = 0;
-    const maxY = 0;
 
-    // Apply boundaries
-    newOffset.x = Math.max(Math.min(newOffset.x, maxX), minX);
-    newOffset.y = Math.max(Math.min(newOffset.y, maxY), minY);
+    newOffset.x = Math.max(Math.min(newOffset.x, 0), minX);
+    newOffset.y = Math.max(Math.min(newOffset.y, 0), minY);
 
     setOffset(newOffset);
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+  const handleMouseUp = () => setIsDragging(false);
 
   return (
-    <div 
-      ref={containerRef} 
-      className={`relative overflow-hidden w-full h-full ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}
+    <div
+      ref={containerRef}
+      className={`relative overflow-hidden w-full h-full ${
+        isDarkMode ? "bg-gray-900" : "bg-gray-100"
+      }`}
     >
       <canvas
         ref={canvasRef}
         width={canvasConfig.width * zoom}
         height={canvasConfig.height * zoom}
-        className={`absolute cursor-${selectedColor ? 'crosshair' : 'move'}`}
+        className={`absolute cursor-${selectedColor ? "crosshair" : "move"}`}
         onClick={handleCanvasClick}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
