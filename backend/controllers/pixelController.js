@@ -45,3 +45,16 @@ exports.paintPixel = async (req, res) => {
         res.status(500).json({ message: "Error al pintar el píxel", error });
     }
 };
+
+exports.deleteAllPixels = async (req, res) => {
+    try {
+        const result = await Pixel.deleteMany({});
+        res.status(200).json({
+            message: `Lienzo limpiado exitosamente.`,
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        console.error("Error al borrar el lienzo:", error);
+        res.status(500).json({ message: "Error al borrar el lienzo", error: error.message });
+    }
+};
