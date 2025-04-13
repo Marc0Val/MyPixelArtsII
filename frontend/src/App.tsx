@@ -12,7 +12,8 @@ import { ScreenshotButton } from "./components/ScreenshotButton";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { useStore } from "./stores/useStore";
 import { Palette } from "lucide-react";
-import { getCanvasConfig, getColors } from "./services/canvasServices";
+import { getCanvasConfig } from "./services/canvasServices";
+import { getColors } from "./services/colorService";
 
 function App() {
   const { user, setZoom, setCanvasConfig, setColors, isDarkMode } = useStore();

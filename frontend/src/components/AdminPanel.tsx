@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
-import { useStore } from '../stores/useStore';
-import { LogOut, Plus, Trash } from 'lucide-react';
+import React, { useState } from "react";
+import { useStore } from "../stores/useStore";
+import { LogOut, Plus, Trash } from "lucide-react";
 
 export const AdminPanel: React.FC = () => {
-  const { canvasConfig, colors, pixels, setCanvasConfig, addColor, removeColor, setUser } = useStore();
+  const {
+    canvasConfig,
+    colors,
+    pixels,
+    setCanvasConfig,
+    addColor,
+    removeColor,
+    setUser,
+  } = useStore();
   const [isOpen, setIsOpen] = useState(false);
-  const [newColor, setNewColor] = useState({ name: '', hex: '#000000' });
-  const [newSize, setNewSize] = useState({ width: canvasConfig.width, height: canvasConfig.height });
+  const [newColor, setNewColor] = useState({ name: "", hex: "#000000" });
+  const [newSize, setNewSize] = useState({
+    width: canvasConfig.width,
+    height: canvasConfig.height,
+  });
 
   const handleAddColor = (e: React.FormEvent) => {
     e.preventDefault();
     addColor({
-      id: Date.now().toString(),
+      _id: Date.now().toString(),
       name: newColor.name,
       hex: newColor.hex,
     });
-    setNewColor({ name: '', hex: '#000000' });
+    setNewColor({ name: "", hex: "#000000" });
   };
 
   const handleRemoveColor = (id: string, hex: string) => {
-    if (pixels.some(pixel => pixel.color === hex)) {
-      alert('No se puede eliminar un color que está en uso en el lienzo');
+    if (pixels.some((pixel) => pixel.color === hex)) {
+      alert("No se puede eliminar un color que está en uso en el lienzo");
       return;
     }
     removeColor(id);
@@ -28,8 +39,11 @@ export const AdminPanel: React.FC = () => {
 
   const handleUpdateSize = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newSize.width < canvasConfig.width || newSize.height < canvasConfig.height) {
-      alert('Solo se permite aumentar las dimensiones del lienzo');
+    if (
+      newSize.width < canvasConfig.width ||
+      newSize.height < canvasConfig.height
+    ) {
+      alert("Solo se permite aumentar las dimensiones del lienzo");
       return;
     }
     setCanvasConfig(newSize);
@@ -64,7 +78,9 @@ export const AdminPanel: React.FC = () => {
                 <input
                   type="number"
                   value={newSize.width}
-                  onChange={(e) => setNewSize({ ...newSize, width: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setNewSize({ ...newSize, width: parseInt(e.target.value) })
+                  }
                   min={canvasConfig.width}
                   className="border rounded px-2 py-1 w-24"
                   placeholder="Ancho"
@@ -72,14 +88,16 @@ export const AdminPanel: React.FC = () => {
                 <input
                   type="number"
                   value={newSize.height}
-                  onChange={(e) => setNewSize({ ...newSize, height: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setNewSize({ ...newSize, height: parseInt(e.target.value) })
+                  }
                   min={canvasConfig.height}
                   className="border rounded px-2 py-1 w-24"
                   placeholder="Alto"
                 />
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+                  className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
                 >
                   Actualizar
                 </button>
@@ -92,7 +110,9 @@ export const AdminPanel: React.FC = () => {
                 <input
                   type="text"
                   value={newColor.name}
-                  onChange={(e) => setNewColor({ ...newColor, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewColor({ ...newColor, name: e.target.value })
+                  }
                   className="border rounded px-2 py-1 flex-1"
                   placeholder="Nombre del color"
                   required
@@ -100,7 +120,9 @@ export const AdminPanel: React.FC = () => {
                 <input
                   type="color"
                   value={newColor.hex}
-                  onChange={(e) => setNewColor({ ...newColor, hex: e.target.value })}
+                  onChange={(e) =>
+                    setNewColor({ ...newColor, hex: e.target.value })
+                  }
                   className="w-12 h-9"
                 />
                 <button
@@ -116,7 +138,10 @@ export const AdminPanel: React.FC = () => {
               <h3 className="font-semibold mb-2">Colores disponibles</h3>
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {colors.map((color) => (
-                  <div key={color.id} className="flex items-center justify-between">
+                  <div
+                    key={color._id}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-2">
                       <div
                         className="w-6 h-6 rounded-full border"
@@ -125,7 +150,7 @@ export const AdminPanel: React.FC = () => {
                       <span>{color.name}</span>
                     </div>
                     <button
-                      onClick={() => handleRemoveColor(color.id, color.hex)}
+                      onClick={() => handleRemoveColor(color._id, color.hex)}
                       className="text-red-500 hover:text-red-700"
                     >
                       <Trash size={16} />
