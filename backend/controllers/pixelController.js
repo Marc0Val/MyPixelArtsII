@@ -58,3 +58,25 @@ exports.deleteAllPixels = async (req, res) => {
         res.status(500).json({ message: "Error al borrar el lienzo", error: error.message });
     }
 };
+
+exports.getPixelsInRegion = async (req, res) => {
+    try {
+        const { minX, maxX, minY, maxY } = req.query;
+
+        if (
+            isNaN(minX) || isNaN(maxX) || isNaN(minY) || isNaN(maxY)
+        ) {
+            return res.status(400).json({ message: "Parámetros inválidos" });
+        }
+
+        const pixels = await Pixel.find({
+            x: { $gte: parseInt(minX), $lte: parseInt(maxX) },
+            y: { $gte: parseInt(minY), $lte: parseInt(maxY) },
+        });
+
+        res.status(200).json(pixels);
+    } catch (error) {
+        console.error("Error al obtener píxeles por región:", error);
+        res.status(500).json({ message: "Error al obtener píxeles por región", error });
+    }
+};
