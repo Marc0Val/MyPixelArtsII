@@ -12,7 +12,7 @@ import { ThemeToggle } from "./components/ThemeToggle";
 import { useCanvasStore } from "./stores/canvasSrore";
 import { useColorStore } from "./stores/colorsStore";
 import { useUIStore } from "./stores/uiStore";
-import { useUserStore } from "./stores/userStore";
+// import { useUserStore } from "./stores/userStore";
 import { Palette } from "lucide-react";
 import { getCanvasConfig } from "./services/canvasServices";
 import { getColors } from "./services/colorService";
@@ -21,7 +21,7 @@ function App() {
   const { setCanvasConfig } = useCanvasStore();
   const { setColors } = useColorStore();
   const { setZoom, isDarkMode } = useUIStore();
-  const { user } = useUserStore();
+  // const { user } = useUserStore();
 
   useEffect(() => {
     setZoom(16);
