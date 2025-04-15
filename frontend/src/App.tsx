@@ -3,11 +3,11 @@ import { Canvas } from "./components/Canvas";
 import { ColorPalette } from "./components/ColorPalette";
 import { ZoomControls } from "./components/ZoomControls";
 import { HelpPanel } from "./components/HelpPanel";
-import { AdminPanel } from "./components/AdminPanel";
-import { LoginPanel } from "./components/LoginPanel";
+// import { AdminPanel } from "./components/AdminPanel";
+// import { LoginPanel } from "./components/LoginPanel";
 import { SocialLinks } from "./components/SocialLinks";
 import { ContactButton } from "./components/ContactButton";
-import { ScreenshotButton } from "./components/ScreenshotButton";
+// import { ScreenshotButton } from "./components/ScreenshotButton";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { useCanvasStore } from "./stores/canvasSrore";
 import { useColorStore } from "./stores/colorsStore";
@@ -68,7 +68,7 @@ function App() {
             <SocialLinks />
             <ContactButton />
             <HelpPanel />
-            {user?.isAdmin ? <AdminPanel /> : <LoginPanel />}
+            {/* {user?.isAdmin ? <AdminPanel /> : <LoginPanel />} */}
           </div>
         </div>
       </header>
@@ -78,11 +78,11 @@ function App() {
       </div>
 
       <div className="fixed bottom-4 right-4 z-10 flex flex-col gap-2">
-        <ScreenshotButton />
+        {/* <ScreenshotButton /> */}
         <ZoomControls />
       </div>
 
-      <main className="w-full h-screen overflow-hidden pt-14">
+      <main className="w-full h-screen overflow-hidden pt-20">
         <Canvas />
       </main>
     </div>
