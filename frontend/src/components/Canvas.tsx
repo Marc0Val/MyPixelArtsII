@@ -1,12 +1,18 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useStore } from "../stores/useStore";
+import { useCanvasStore } from "../stores/canvasSrore";
+import { usePixelStore } from "../stores/pixelsStore";
+import { useColorStore } from "../stores/colorsStore";
+import { useUIStore } from "../stores/uiStore";
 import { getPixels, paintPixel } from "../services/pixelService";
 
 export const Canvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { canvasConfig, pixels, setPixel, selectedColor, zoom, isDarkMode } =
-    useStore();
+
+  const { canvasConfig } = useCanvasStore();
+  const { pixels, setPixel } = usePixelStore();
+  const { selectedColor } = useColorStore();
+  const { zoom, isDarkMode } = useUIStore();
 
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });

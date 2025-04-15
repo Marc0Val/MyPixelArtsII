@@ -1,9 +1,9 @@
-import React from 'react';
-import { ZoomIn, ZoomOut } from 'lucide-react';
-import { useStore } from '../stores/useStore';
+import React from "react";
+import { ZoomIn, ZoomOut } from "lucide-react";
+import { useUIStore } from "../stores/uiStore";
 
 export const ZoomControls: React.FC = () => {
-  const { zoom, setZoom } = useStore();
+  const { zoom, setZoom } = useUIStore();
 
   const handleZoomIn = () => {
     setZoom(Math.min(zoom * 1.5, 30));
@@ -21,7 +21,7 @@ export const ZoomControls: React.FC = () => {
         title="Zoom Out"
         disabled={zoom <= 5}
       >
-        <ZoomOut size={20} className={zoom <= 5 ? 'text-gray-400' : ''} />
+        <ZoomOut size={20} className={zoom <= 5 ? "text-gray-400" : ""} />
       </button>
       <button
         onClick={handleZoomIn}
@@ -29,7 +29,7 @@ export const ZoomControls: React.FC = () => {
         title="Zoom In"
         disabled={zoom >= 50}
       >
-        <ZoomIn size={20} className={zoom >= 50 ? 'text-gray-400' : ''} />
+        <ZoomIn size={20} className={zoom >= 50 ? "text-gray-400" : ""} />
       </button>
     </div>
   );

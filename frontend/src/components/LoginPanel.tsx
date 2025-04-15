@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { useStore } from '../stores/useStore';
+import React, { useState } from "react";
+import { useUserStore } from "../stores/userStore";
 
 export const LoginPanel: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const { setUser } = useStore();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { setUser } = useUserStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Mock login - in a real app, this would validate against a backend
-    if (username === 'admin' && password === 'admin') {
-      setUser({ id: '1', isAdmin: true });
+    if (username === "admin" && password === "admin") {
+      setUser({ id: "1", isAdmin: true });
       setIsOpen(false);
     } else {
-      alert('Credenciales inválidas');
+      alert("Credenciales inválidas");
     }
   };
 

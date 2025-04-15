@@ -1,4 +1,3 @@
-// src/App.tsx
 import { useEffect } from "react";
 import { Canvas } from "./components/Canvas";
 import { ColorPalette } from "./components/ColorPalette";
@@ -10,13 +9,19 @@ import { SocialLinks } from "./components/SocialLinks";
 import { ContactButton } from "./components/ContactButton";
 import { ScreenshotButton } from "./components/ScreenshotButton";
 import { ThemeToggle } from "./components/ThemeToggle";
-import { useStore } from "./stores/useStore";
+import { useCanvasStore } from "./stores/canvasSrore";
+import { useColorStore } from "./stores/colorsStore";
+import { useUIStore } from "./stores/uiStore";
+import { useUserStore } from "./stores/userStore";
 import { Palette } from "lucide-react";
 import { getCanvasConfig } from "./services/canvasServices";
 import { getColors } from "./services/colorService";
 
 function App() {
-  const { user, setZoom, setCanvasConfig, setColors, isDarkMode } = useStore();
+  const { setCanvasConfig } = useCanvasStore();
+  const { setColors } = useColorStore();
+  const { setZoom, isDarkMode } = useUIStore();
+  const { user } = useUserStore();
 
   useEffect(() => {
     setZoom(16);

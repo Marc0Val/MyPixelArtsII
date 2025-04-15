@@ -1,10 +1,10 @@
 import React from "react";
-import { useStore } from "../stores/useStore";
+import { useColorStore } from "../stores/colorsStore";
 import { Move } from "lucide-react";
 import clsx from "clsx";
 
 export const ColorPalette: React.FC = () => {
-  const { colors, selectedColor, setSelectedColor } = useStore();
+  const { colors, selectedColor, setSelectedColor } = useColorStore();
 
   return (
     <div className="flex flex-wrap gap-2 p-4 bg-white rounded-lg shadow-md">

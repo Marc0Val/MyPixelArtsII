@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { useStore } from "../stores/useStore";
+import { useCanvasStore } from "../stores/canvasSrore";
+import { useColorStore } from "../stores/colorsStore";
+import { usePixelStore } from "../stores/pixelsStore";
+import { useUserStore } from "../stores/userStore";
 import { LogOut, Plus, Trash } from "lucide-react";
 
 export const AdminPanel: React.FC = () => {
-  const {
-    canvasConfig,
-    colors,
-    pixels,
-    setCanvasConfig,
-    addColor,
-    removeColor,
-    setUser,
-  } = useStore();
+  const { canvasConfig, setCanvasConfig } = useCanvasStore();
+  const { colors, addColor, removeColor } = useColorStore();
+  const { pixels } = usePixelStore();
+  const { setUser } = useUserStore();
+
   const [isOpen, setIsOpen] = useState(false);
   const [newColor, setNewColor] = useState({ name: "", hex: "#000000" });
   const [newSize, setNewSize] = useState({
